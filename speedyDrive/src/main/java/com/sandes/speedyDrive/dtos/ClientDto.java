@@ -2,8 +2,6 @@ package com.sandes.speedyDrive.dtos;
 
 import java.util.List;
 
-import com.sandes.speedyDrive.models.CarModel;
-
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -13,14 +11,10 @@ public class ClientDto {
 	@NotBlank
 	private String name;
 	@NotBlank
-	@Size(max = 11,min = 11)
 	private String cpf;
 	@NotBlank
 	private String address;
-	@NotBlank
-	@OneToMany(mappedBy = "client")
-	private List<CarModel> cars;
-	
+
 	public ClientDto() {}
 
 	public String getName() {
@@ -47,13 +41,5 @@ public class ClientDto {
 		this.address = address;
 	}
 
-	public List<CarModel> getCars() {
-		return cars;
-	}
-
-	public void setCars(List<CarModel> cars) {
-		this.cars = cars;
-	}
-	
 	
 }

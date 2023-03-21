@@ -32,9 +32,6 @@ public class ClientModel implements Serializable {
 	@Column(nullable = false)
 	private String address;
 	
-	@Column(nullable = false)
-	@OneToMany(mappedBy = "client")
-	private List<CarModel> cars = new ArrayList<>();
 	
 	public ClientModel() {
 		
@@ -70,14 +67,6 @@ public class ClientModel implements Serializable {
 
 	public void setAddress(String address) {
 		this.address = address;
-	}
-
-	public List<CarModel> getCars() {
-		return cars;
-	}
-
-	public void setCars(List<CarModel> cars) {
-		this.cars = cars;
 	}
 
 	public static long getSerialversionuid() {

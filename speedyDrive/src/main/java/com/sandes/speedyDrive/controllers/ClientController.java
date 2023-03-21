@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sandes.speedyDrive.dtos.ClientDto;
 import com.sandes.speedyDrive.models.ClientModel;
-import com.sandes.speedyDrive.services.CarService;
 import com.sandes.speedyDrive.services.ClientService;
 
 import jakarta.validation.Valid;
@@ -33,12 +32,10 @@ import jakarta.validation.Valid;
 public class ClientController {
 
 	final ClientService  clientService;
-	final CarService carService;
 	
-	public ClientController(ClientService clientService, CarService carService) {
+	public ClientController(ClientService clientService) {
 		super();
 		this.clientService = clientService;
-		this.carService = carService;
 	}
 
 	@PostMapping
