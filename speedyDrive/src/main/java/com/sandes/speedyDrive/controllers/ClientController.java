@@ -33,7 +33,6 @@ import jakarta.validation.Valid;
 public class ClientController {
 
 	final ClientService  clientService;
-	final CarService carService;
 	
 	public ClientController(ClientService clientService, CarService carService) {
 		super();
