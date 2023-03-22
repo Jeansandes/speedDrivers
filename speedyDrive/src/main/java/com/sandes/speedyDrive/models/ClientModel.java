@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,7 +34,7 @@ public class ClientModel implements Serializable {
 	
 	@Column(nullable = false)
 	private String address;
-	
+	@JsonIgnore
 	@Column(nullable = false)
 	@OneToMany(mappedBy = "client")
 	private List<CarModel> cars = new ArrayList<>();
