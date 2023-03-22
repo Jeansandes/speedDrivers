@@ -37,7 +37,6 @@ public class ClientController {
 	public ClientController(ClientService clientService, CarService carService) {
 		super();
 		this.clientService = clientService;
-		this.carService = carService;
 	}
 
 	@PostMapping

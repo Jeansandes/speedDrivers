@@ -40,6 +40,19 @@ public class ClientModel implements Serializable {
 		
 	}
 
+	
+	public ClientModel(UUID id, String name, String cpf, LocalDateTime registrationDate, String address,
+			List<CarModel> cars) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.cpf = cpf;
+		this.registrationDate = registrationDate;
+		this.address = address;
+		this.cars = cars;
+	}
+
+
 	public UUID getId() {
 		return id;
 	}

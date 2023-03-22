@@ -34,6 +34,17 @@ public class CarModel implements Serializable {
 	
 	public CarModel() {}
 
+	
+	public CarModel(UUID id, String name, String model, LocalDateTime registrationDate, ClientModel client) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.model = model;
+		this.registrationDate = registrationDate;
+		this.client = client;
+	}
+
+
 	public UUID getId() {
 		return id;
 	}
