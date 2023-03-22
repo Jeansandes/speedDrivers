@@ -2,6 +2,7 @@ package com.sandes.speedyDrive.models;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -35,12 +36,12 @@ public class CarModel implements Serializable {
 	public CarModel() {}
 
 	
-	public CarModel(UUID id, String name, String model, LocalDateTime registrationDate, ClientModel client) {
+	public CarModel(UUID id, String name, String model, ClientModel client) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.model = model;
-		this.registrationDate = registrationDate;
+		this.registrationDate =  LocalDateTime.now(ZoneId.of("UTC"));
 		this.client = client;
 	}
 

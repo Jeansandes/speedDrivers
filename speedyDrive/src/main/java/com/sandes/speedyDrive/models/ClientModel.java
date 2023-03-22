@@ -2,6 +2,7 @@ package com.sandes.speedyDrive.models;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -41,15 +42,13 @@ public class ClientModel implements Serializable {
 	}
 
 	
-	public ClientModel(UUID id, String name, String cpf, LocalDateTime registrationDate, String address,
-			List<CarModel> cars) {
+	public ClientModel(UUID id, String name, String cpf, String address) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.cpf = cpf;
-		this.registrationDate = registrationDate;
+		this.registrationDate = LocalDateTime.now(ZoneId.of("UTC"));
 		this.address = address;
-		this.cars = cars;
 	}
 
 
