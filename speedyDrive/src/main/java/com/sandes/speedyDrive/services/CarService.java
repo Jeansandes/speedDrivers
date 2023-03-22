@@ -1,5 +1,7 @@
 package com.sandes.speedyDrive.services;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -13,26 +15,30 @@ import com.sandes.speedyDrive.repositores.CarRepository;
 @Service
 public class CarService {
 
-	final CarRepository carRepositoroy;
+	final CarRepository carRepository;
 
-	public CarService(CarRepository carRepositoroy) {
+	public CarService(CarRepository carRepository) {
 		super();
-		this.carRepositoroy = carRepositoroy;
+		this.carRepository = carRepository;
 	}
 
 	public CarModel save(CarModel carModel) {
-		return carRepositoroy.save(carModel);
+		return carRepository.save(carModel);
 	}
 
 	public Page<CarModel> findAll(Pageable Pageable) {
-		return carRepositoroy.findAll(Pageable);
+		return carRepository.findAll(Pageable);
+	}
+	
+	public List<CarModel> findAllAvaliable(){
+		return carRepository.findByclientIsNull();
 	}
 
 	public Optional<CarModel> findById(UUID id) {
-		return carRepositoroy.findById(id);
+		return carRepository.findById(id);
 	}
 
 	public void delete(CarModel carOptional) {
-		carRepositoroy.delete(carOptional);	
+		carRepository.delete(carOptional);	
 	}
 }

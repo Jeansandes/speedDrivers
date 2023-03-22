@@ -2,6 +2,7 @@ package com.sandes.speedyDrive.controllers;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -46,21 +47,28 @@ public class CarController {
 	public ResponseEntity<Object> saveCar(@RequestBody @Valid CarDto carsdto){
 		var carModel = new CarModel();	
 		BeanUtils.copyProperties(carsdto, carModel);
-		Optional<ClientModel> clientOptional= clientService.findById(carModel.getClient().getId());
-		if(!clientOptional.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id not found!");
-		}
 		carModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
-		var clientModel = new ClientModel();
-		clientModel.setId(clientOptional.get().getId());
-		clientModel.setName(clientOptional.get().getName());
-		clientModel.setCpf(clientOptional.get().getCpf());
-		clientModel.setRegistrationDate(clientOptional.get().getRegistrationDate());
-		clientModel.setAddress(clientOptional.get().getAddress());
-		clientModel.getCars().add(carModel);
-		/*clientOptional.get().getCars().add(carModel);*/
-		clientService.save(clientModel);
+		if(carModel.getId()!=null) {
+			Optional<ClientModel> clientOptional= clientService.findById(carModel.getClient().getId());
+			if(!clientOptional.isPresent()) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id not found!");
+			}
+			var clientModel = new ClientModel();
+			clientModel.setId(clientOptional.get().getId());
+			clientModel.setName(clientOptional.get().getName());
+			clientModel.setCpf(clientOptional.get().getCpf());
+			clientModel.setRegistrationDate(clientOptional.get().getRegistrationDate());
+			clientModel.setAddress(clientOptional.get().getAddress());
+			clientModel.getCars().add(carModel);
+			clientService.save(clientModel);
+		}
+		
 		return ResponseEntity.status(HttpStatus.CREATED).body(carService.save(carModel));
+	}
+	
+	@GetMapping("/avaliableCars")
+	public ResponseEntity<List<CarModel>> getAllAvaliableCars(){
+		return ResponseEntity.status(HttpStatus.OK).body(carService.findAllAvaliable());
 	}
 	
 	@GetMapping
