@@ -2,6 +2,7 @@ package com.sandes.speedyDrive.controllers;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.BeanUtils;
@@ -22,7 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sandes.speedyDrive.dtos.CarDto;
 import com.sandes.speedyDrive.models.CarModel;
+import com.sandes.speedyDrive.models.ClientModel;
 import com.sandes.speedyDrive.services.CarService;
+import com.sandes.speedyDrive.services.ClientService;
 
 import jakarta.validation.Valid;
 
@@ -31,17 +34,32 @@ import jakarta.validation.Valid;
 public class CarController {
 
 	final CarService carService;
+	final ClientService clientService;
 
-	public CarController(CarService carService) {
+	public CarController(CarService carService,ClientService clientService) {
 		super();
 		this.carService = carService;
+		this.clientService = clientService;
 	}
 	
 	@PostMapping
-	public ResponseEntity<CarModel> saveCar(@RequestBody @Valid CarDto carsdto){
-		var carModel = new CarModel();
+	public ResponseEntity<Object> saveCar(@RequestBody @Valid CarDto carsdto){
+		var carModel = new CarModel();	
 		BeanUtils.copyProperties(carsdto, carModel);
+		Optional<ClientModel> clientOptional= clientService.findById(carModel.getClient().getId());
+		if(!clientOptional.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id not found!");
+		}
 		carModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
+		var clientModel = new ClientModel();
+		clientModel.setId(clientOptional.get().getId());
+		clientModel.setName(clientOptional.get().getName());
+		clientModel.setCpf(clientOptional.get().getCpf());
+		clientModel.setRegistrationDate(clientOptional.get().getRegistrationDate());
+		clientModel.setAddress(clientOptional.get().getAddress());
+		clientModel.getCars().add(carModel);
+		/*clientOptional.get().getCars().add(carModel);*/
+		clientService.save(clientModel);
 		return ResponseEntity.status(HttpStatus.CREATED).body(carService.save(carModel));
 	}
 	

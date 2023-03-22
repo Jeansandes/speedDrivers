@@ -13,7 +13,7 @@ import com.sandes.speedyDrive.repositores.CarRepository;
 import com.sandes.speedyDrive.repositores.ClientRepository;
 
 @SpringBootApplication
-public class SpeedyDriveApplication implements CommandLineRunner{
+public class SpeedyDriveApplication {
 	@Autowired
 	private ClientRepository clientRepository;
 	@Autowired
@@ -22,7 +22,7 @@ public class SpeedyDriveApplication implements CommandLineRunner{
 		SpringApplication.run(SpeedyDriveApplication.class, args);
 	}
 
-	@Override
+	/*@Override
 	public void run(String... args) throws Exception {
 		ClientModel cl1 = new ClientModel(null,"Sandro Bjj","06636274352","cohabiano x");
 		ClientModel cl2 = new ClientModel(null,"Jean Bjj","111111111111","anil 2");
@@ -41,12 +41,11 @@ public class SpeedyDriveApplication implements CommandLineRunner{
 		carRepository.save(cr1);
 		carRepository.save(cr2);
 		carRepository.save(cr3);
-		carRepository.save(cr4);
+		carRepository.save(cr4);*/
 
 
 		
 		
 		
-	}
 
 }

@@ -17,8 +17,6 @@ public class ClientDto {
 	private String cpf;
 	@NotBlank
 	private String address;
-	@NotBlank
-	@OneToMany(mappedBy = "client")
 	private List<CarModel> cars;
 	
 	public ClientDto() {}
