@@ -54,13 +54,10 @@ public class CarController {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id not found!");
 			}
 			var clientModel = new ClientModel();
-			clientModel.setId(clientOptional.get().getId());
-			clientModel.setName(clientOptional.get().getName());
-			clientModel.setCpf(clientOptional.get().getCpf());
-			clientModel.setRegistrationDate(clientOptional.get().getRegistrationDate());
-			clientModel.setAddress(clientOptional.get().getAddress());
+			BeanUtils.copyProperties(clientOptional.get(), clientModel);
 			clientModel.getCars().add(carModel);
 			clientService.save(clientModel);
+			
 		}
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(carService.save(carModel));
@@ -99,7 +96,13 @@ public class CarController {
 		carModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
 		return ResponseEntity.status(HttpStatus.OK).body(carService.save(carModel));
 	}
-	
+	/*
+	clientModel.setId(clientOptional.get().getId());
+	clientModel.setName(clientOptional.get().getName());
+	clientModel.setCpf(clientOptional.get().getCpf());
+	clientModel.setRegistrationDate(clientOptional.get().getRegistrationDate());
+	clientModel.setAddress(clientOptional.get().getAddress());
+	*/
 	
 	
 	
