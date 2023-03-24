@@ -48,10 +48,10 @@ public class CarController {
 		var carModel = new CarModel();	
 		BeanUtils.copyProperties(carsdto, carModel);
 		carModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
-		if(carModel.getId()!=null) {
+		if(carModel.getClient().getId()!=null) {
 			Optional<ClientModel> clientOptional= clientService.findById(carModel.getClient().getId());
 			if(!clientOptional.isPresent()) {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id not found!");
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("client not found!");
 			}
 			var clientModel = new ClientModel();
 			BeanUtils.copyProperties(clientOptional.get(), clientModel);
@@ -82,6 +82,9 @@ public class CarController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Object> deleteCar(@PathVariable(value= "id")UUID id){
 		CarModel carOptional = carService.findById(id).get();
+		if(carOptional.getClient() != null) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("you cannot delete or update a car that already has a customer");
+		}
 		carService.delete(carOptional);
 		return ResponseEntity.status(HttpStatus.OK).body("delete car!");
 	}
@@ -89,13 +92,18 @@ public class CarController {
 	@PutMapping("/{id}")
 	public ResponseEntity<Object> updateCar(@RequestBody @Valid CarDto carsdto,@PathVariable(value= "id")UUID id){
 		CarModel carOptional = carService.findById(id).get();
-		
+		if(carOptional.getClient() != null) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("you cannot delete or update a car that already has a customer");
+		}
 		var carModel = new CarModel();
 		BeanUtils.copyProperties(carsdto, carModel);
 		carModel.setId(carOptional.getId());
 		carModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
 		return ResponseEntity.status(HttpStatus.OK).body(carService.save(carModel));
 	}
+	
+	
+	
 	/*
 	clientModel.setId(clientOptional.get().getId());
 	clientModel.setName(clientOptional.get().getName());
