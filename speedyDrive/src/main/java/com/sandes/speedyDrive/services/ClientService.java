@@ -1,5 +1,6 @@
 package com.sandes.speedyDrive.services;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -7,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.sandes.speedyDrive.models.CarModel;
 import com.sandes.speedyDrive.models.ClientModel;
 import com.sandes.speedyDrive.repositores.ClientRepository;
 
@@ -36,5 +38,9 @@ public class ClientService {
 	public void delete(ClientModel clients) {
 		// TODO Auto-generated method stub
 		clientRepository.delete(clients);
+	}
+
+	public List<ClientModel> findAllAvaliable() {
+		return clientRepository.findBycarsIsNull();
 	}
 }

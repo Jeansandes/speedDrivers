@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,6 +31,7 @@ public class CarModel implements Serializable {
 	private String model;
 	@Column(nullable = false)
 	private LocalDateTime registrationDate;
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name= "client_id")
 	private ClientModel client;

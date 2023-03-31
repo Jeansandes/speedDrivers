@@ -2,6 +2,7 @@ package com.sandes.speedyDrive.controllers;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sandes.speedyDrive.dtos.ClientDto;
+import com.sandes.speedyDrive.models.CarModel;
 import com.sandes.speedyDrive.models.ClientModel;
 import com.sandes.speedyDrive.services.CarService;
 import com.sandes.speedyDrive.services.ClientService;
@@ -64,6 +66,11 @@ public class ClientController {
 		
 	}
 	
+	@GetMapping("/avaliableClient")
+	public ResponseEntity<List<ClientModel>> getAllAvaliableClients(){
+		return ResponseEntity.status(HttpStatus.OK).body(clientService.findAllAvaliable());
+	}
+	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Object> deleteClient(@PathVariable(value= "id") UUID id){
 		Optional<ClientModel> clientOptional = clientService.findById(id);
@@ -83,7 +90,6 @@ public class ClientController {
 		var clientModel = new ClientModel();
 		clientModel.setId(clientOptional.get().getId());
 		clientModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
-		clientModel.setCars(clientOptional.get().getCars());
 		return ResponseEntity.status(HttpStatus.OK).body(clientService.save(clientModel));
 	}
 	

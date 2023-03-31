@@ -48,7 +48,7 @@ public class CarController {
 		var carModel = new CarModel();	
 		BeanUtils.copyProperties(carsdto, carModel);
 		carModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
-		if(carModel.getClient().getId()!=null) {
+		if(carModel.getClient() !=null) {
 			Optional<ClientModel> clientOptional= clientService.findById(carModel.getClient().getId());
 			if(!clientOptional.isPresent()) {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("client not found!");
