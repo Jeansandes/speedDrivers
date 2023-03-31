@@ -83,6 +83,7 @@ public class ClientController {
 		var clientModel = new ClientModel();
 		clientModel.setId(clientOptional.get().getId());
 		clientModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
+		clientModel.setCars(clientOptional.get().getCars());
 		return ResponseEntity.status(HttpStatus.OK).body(clientService.save(clientModel));
 	}
 	
