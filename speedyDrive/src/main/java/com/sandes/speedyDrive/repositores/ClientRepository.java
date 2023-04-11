@@ -11,4 +11,5 @@ public interface ClientRepository  extends JpaRepository<ClientModel, UUID>{
 
 	List<ClientModel> findBycarsIsNull();
 
+
 }

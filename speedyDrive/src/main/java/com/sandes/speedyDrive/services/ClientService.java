@@ -1,5 +1,6 @@
 package com.sandes.speedyDrive.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -10,16 +11,19 @@ import org.springframework.stereotype.Service;
 
 import com.sandes.speedyDrive.models.CarModel;
 import com.sandes.speedyDrive.models.ClientModel;
+import com.sandes.speedyDrive.repositores.CarRepository;
 import com.sandes.speedyDrive.repositores.ClientRepository;
 
 @Service
 public class ClientService {
 
 	final ClientRepository clientRepository;
+	final CarRepository carRepository;
 
-	public ClientService(ClientRepository clientRepository) {
+	public ClientService(ClientRepository clientRepository, CarRepository carRepository) {
 		super();
 		this.clientRepository = clientRepository;
+		this.carRepository = carRepository;
 	}
 
 	public ClientModel save(ClientModel clientModel) {
@@ -43,4 +47,24 @@ public class ClientService {
 	public List<ClientModel> findAllAvaliable() {
 		return clientRepository.findBycarsIsNull();
 	}
+
+	public void delete(UUID id) {
+		
+	}
+
+	public void changeValues(List<CarModel> cars) {
+		List<CarModel> entities  = new ArrayList<>();
+		
+		for(CarModel car : cars) {
+			car.setClient(null);
+			entities.add(car);
+		}
+		
+		carRepository.saveAll(entities);
+		
+		
+	}
+
 }
+
+

@@ -11,4 +11,6 @@ public interface CarRepository extends JpaRepository<CarModel, UUID> {
 
 	List<CarModel> findByclientIsNull();
 
+	/*void updateClientNull(UUID id);*/
+
 }

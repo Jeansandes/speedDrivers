@@ -2,6 +2,7 @@ package com.sandes.speedyDrive.controllers;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,10 +36,11 @@ import jakarta.validation.Valid;
 public class ClientController {
 
 	final ClientService  clientService;
-	
+	final CarService carService;
 	public ClientController(ClientService clientService, CarService carService) {
 		super();
 		this.clientService = clientService;
+		this.carService = carService;
 	}
 
 	@PostMapping
@@ -77,6 +79,8 @@ public class ClientController {
 		if(!clientOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id not found!");
 		}
+		/*carService.updateClientNull(id);*/
+		clientService.changeValues(clientOptional.get().getCars());
 		clientService.delete(clientOptional.get());
 		return ResponseEntity.status(HttpStatus.OK).body("customer deleted successfully!");
 	}
@@ -88,6 +92,7 @@ public class ClientController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id not found!");
 		}
 		var clientModel = new ClientModel();
+		BeanUtils.copyProperties(clientsDto, clientModel);
 		clientModel.setId(clientOptional.get().getId());
 		clientModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
 		return ResponseEntity.status(HttpStatus.OK).body(clientService.save(clientModel));
@@ -95,6 +100,29 @@ public class ClientController {
 	
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*
+	clientOptional.get().getCars().clear();
+	*/
 	
 	
 }

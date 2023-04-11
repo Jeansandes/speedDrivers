@@ -104,17 +104,6 @@ public class CarController {
 	
 	
 	
-	/*
-	clientModel.setId(clientOptional.get().getId());
-	clientModel.setName(clientOptional.get().getName());
-	clientModel.setCpf(clientOptional.get().getCpf());
-	clientModel.setRegistrationDate(clientOptional.get().getRegistrationDate());
-	clientModel.setAddress(clientOptional.get().getAddress());
-	*/
-	
-	
-	
-	
 	
 
 	

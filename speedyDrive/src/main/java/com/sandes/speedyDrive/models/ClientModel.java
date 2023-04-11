@@ -34,7 +34,7 @@ public class ClientModel implements Serializable {
 	
 	@Column(nullable = false)
 	private String address;
-	
+	@JsonIgnore
 	@OneToMany(mappedBy = "client")
 	private List<CarModel> cars = new ArrayList<>();
 	

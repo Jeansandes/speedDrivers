@@ -41,4 +41,9 @@ public class CarService {
 	public void delete(CarModel carOptional) {
 		carRepository.delete(carOptional);	
 	}
+
+	public void updateClientNull(UUID id) {
+		/*carRepository.updateClientNull(id);*/
+	}
+
 }
