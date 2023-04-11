@@ -64,8 +64,8 @@ public class CarController {
 	}
 	
 	@GetMapping("/avaliableCars")
-	public ResponseEntity<List<CarModel>> getAllAvaliableCars(){
-		return ResponseEntity.status(HttpStatus.OK).body(carService.findAllAvaliable());
+	public ResponseEntity<Page<CarModel>> getAllAvaliableCars(@PageableDefault(page = 0, size = 2, sort = "id", direction = Sort.Direction.ASC) Pageable pageable){
+		return ResponseEntity.status(HttpStatus.OK).body(carService.findAllAvaliable(pageable));
 	}
 	
 	@GetMapping
@@ -93,7 +93,7 @@ public class CarController {
 	public ResponseEntity<Object> updateCar(@RequestBody @Valid CarDto carsdto,@PathVariable(value= "id")UUID id){
 		CarModel carOptional = carService.findById(id).get();
 		if(carOptional.getClient() != null) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body("you cannot delete or update a car that already has a customer");
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("esse carro pertence a um cliente!");
 		}
 		var carModel = new CarModel();
 		BeanUtils.copyProperties(carsdto, carModel);

@@ -65,6 +65,14 @@ public class ClientService {
 		
 	}
 
+	public boolean existsByCpf(String cpf) {
+		return clientRepository.existsByCpf(cpf);
+	}
+
+	public Page<ClientModel> findAllAvaliable(Pageable pageable) {
+		return clientRepository.findBycarsIsNull(pageable);
+	}
+
 }
 
 

@@ -44,7 +44,10 @@ public class ClientController {
 	}
 
 	@PostMapping
-	public ResponseEntity<ClientModel> saveClient(@RequestBody @Valid ClientDto clientsDto){
+	public ResponseEntity<Object> saveClient(@RequestBody @Valid ClientDto clientsDto){
+		if(clientService.existsByCpf(clientsDto.getCpf())) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("este cpf já está indisponível!");
+		}
 		var clientModel = new ClientModel();
 		BeanUtils.copyProperties(clientsDto, clientModel);
 		clientModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
@@ -69,8 +72,8 @@ public class ClientController {
 	}
 	
 	@GetMapping("/avaliableClient")
-	public ResponseEntity<List<ClientModel>> getAllAvaliableClients(){
-		return ResponseEntity.status(HttpStatus.OK).body(clientService.findAllAvaliable());
+	public ResponseEntity<Page<ClientModel>> getAllAvaliableClients(@PageableDefault(page = 0, size = 2, sort = "id", direction = Sort.Direction.ASC) Pageable pageable){
+		return ResponseEntity.status(HttpStatus.OK).body(clientService.findAllAvaliable(pageable));
 	}
 	
 	@DeleteMapping("/{id}")

@@ -30,9 +30,9 @@ public class CarService {
 		return carRepository.findAll(Pageable);
 	}
 	
-	public List<CarModel> findAllAvaliable(){
+	/*public List<CarModel> findAllAvaliable(){
 		return carRepository.findByclientIsNull();
-	}
+	}*/
 
 	public Optional<CarModel> findById(UUID id) {
 		return carRepository.findById(id);
@@ -44,6 +44,10 @@ public class CarService {
 
 	public void updateClientNull(UUID id) {
 		/*carRepository.updateClientNull(id);*/
+	}
+
+	public Page<CarModel> findAllAvaliable(Pageable pageable) {
+		return  carRepository.findByclientIsNull(pageable);
 	}
 
 }
