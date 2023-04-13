@@ -1,5 +1,6 @@
 package com.sandes.speedyDrive.controllers;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -23,11 +24,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sandes.speedyDrive.controllers.exception.StandardError;
 import com.sandes.speedyDrive.dtos.ClientDto;
 import com.sandes.speedyDrive.models.CarModel;
 import com.sandes.speedyDrive.models.ClientModel;
 import com.sandes.speedyDrive.services.CarService;
 import com.sandes.speedyDrive.services.ClientService;
+import com.sandes.speedyDrive.services.exceptions.EntityNotFoundException;
 
 import jakarta.validation.Valid;
 
@@ -42,25 +45,22 @@ public class ClientController {
 		this.clientService = clientService;
 		this.carService = carService;
 	}
+	
 
-	@PostMapping
-	public ResponseEntity<Object> saveClient(@RequestBody @Valid ClientDto clientsDto){
-		if(clientService.existsByCpf(clientsDto.getCpf())) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body("este cpf já está indisponível!");
-		}
-		var clientModel = new ClientModel();
-		BeanUtils.copyProperties(clientsDto, clientModel);
-		clientModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
-		return ResponseEntity.status(HttpStatus.CREATED).body(clientService.save(clientModel));
+	@PostMapping()
+	public ResponseEntity<ClientModel> saveClient(@RequestBody @Valid ClientDto clientsDto){
+			clientService.save1(clientsDto);
+			var clientModel = new ClientModel();
+			BeanUtils.copyProperties(clientsDto, clientModel);
+			clientModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
+			return ResponseEntity.status(HttpStatus.CREATED).body(clientService.save(clientModel));
+		
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Object> getOneClient(@PathVariable(value= "id") UUID id){
-		Optional<ClientModel> clientOptional = clientService.findById(id);
-		if(!clientOptional.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id not found!");
-		}
-		return ResponseEntity.status(HttpStatus.OK).body(clientOptional.get());
+	public ResponseEntity<ClientModel> getOneClient(@PathVariable(value= "id") UUID id){
+		ClientModel client = clientService.findById(id);
+		return ResponseEntity.status(HttpStatus.OK).body(client);
 	}
 	
 	@GetMapping
@@ -77,55 +77,20 @@ public class ClientController {
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Object> deleteClient(@PathVariable(value= "id") UUID id){
-		Optional<ClientModel> clientOptional = clientService.findById(id);
-		if(!clientOptional.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id not found!");
-		}
-		/*carService.updateClientNull(id);*/
-		clientService.changeValues(clientOptional.get().getCars());
-		clientService.delete(clientOptional.get());
-		return ResponseEntity.status(HttpStatus.OK).body("customer deleted successfully!");
+	public ResponseEntity<String> deleteClient1(@PathVariable(value= "id") UUID id){
+			ClientModel client = clientService.findById(id);
+			clientService.changeValues(client.getCars());
+			clientService.delete(client);
+			return ResponseEntity.status(HttpStatus.OK).body("customer deleted successfully!");	
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<Object> updateClient(@RequestBody @Valid ClientDto clientsDto, @PathVariable(value= "id") UUID id){
-		Optional<ClientModel> clientOptional = clientService.findById(id);
-		if(!clientOptional.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id not found!");
-		}
-		var clientModel = new ClientModel();
-		BeanUtils.copyProperties(clientsDto, clientModel);
-		clientModel.setId(clientOptional.get().getId());
-		clientModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
-		return ResponseEntity.status(HttpStatus.OK).body(clientService.save(clientModel));
+	public ResponseEntity<ClientModel> updateClient(@RequestBody @Valid ClientDto clientsDto, @PathVariable(value= "id") UUID id){
+			ClientModel client = clientService.findById(id);
+			var clientModel = new ClientModel();
+			BeanUtils.copyProperties(clientsDto, clientModel);
+			clientModel.setId(client.getId());
+			clientModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
+			return ResponseEntity.status(HttpStatus.OK).body(clientService.save(clientModel));
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/*
-	clientOptional.get().getCars().clear();
-	*/
-	
-	
 }

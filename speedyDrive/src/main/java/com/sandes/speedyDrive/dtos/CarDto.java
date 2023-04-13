@@ -8,9 +8,9 @@ import jakarta.validation.constraints.NotBlank;
 public class CarDto {
 
 
-	@NotBlank
+	@NotBlank()
 	private String name;
-	@NotBlank
+	@NotBlank()
 	private String model;
 	private ClientModel client;
 	

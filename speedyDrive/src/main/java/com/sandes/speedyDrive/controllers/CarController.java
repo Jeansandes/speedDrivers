@@ -49,12 +49,9 @@ public class CarController {
 		BeanUtils.copyProperties(carsdto, carModel);
 		carModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
 		if(carModel.getClient() !=null) {
-			Optional<ClientModel> clientOptional= clientService.findById(carModel.getClient().getId());
-			if(!clientOptional.isPresent()) {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("client not found!");
-			}
+			ClientModel client= clientService.findById(carModel.getClient().getId());
 			var clientModel = new ClientModel();
-			BeanUtils.copyProperties(clientOptional.get(), clientModel);
+			BeanUtils.copyProperties(client, clientModel);
 			clientModel.getCars().add(carModel);
 			clientService.save(clientModel);
 			
@@ -75,29 +72,25 @@ public class CarController {
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<CarModel> getOneCar(@PathVariable(value= "id")UUID id){
-		CarModel carOptional = carService.findById(id).get();
-		return ResponseEntity.status(HttpStatus.OK).body(carOptional);
+		CarModel car = carService.findById(id);
+		return ResponseEntity.status(HttpStatus.OK).body(car);
 	}
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Object> deleteCar(@PathVariable(value= "id")UUID id){
-		CarModel carOptional = carService.findById(id).get();
-		if(carOptional.getClient() != null) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body("you cannot delete or update a car that already has a customer");
-		}
-		carService.delete(carOptional);
+		CarModel car = carService.findById(id);
+		carService.checkClient(car);
+		carService.delete(car);
 		return ResponseEntity.status(HttpStatus.OK).body("delete car!");
 	}
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<Object> updateCar(@RequestBody @Valid CarDto carsdto,@PathVariable(value= "id")UUID id){
-		CarModel carOptional = carService.findById(id).get();
-		if(carOptional.getClient() != null) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body("esse carro pertence a um cliente!");
-		}
+		CarModel car = carService.findById(id);
+		carService.checkClient(car);
 		var carModel = new CarModel();
 		BeanUtils.copyProperties(carsdto, carModel);
-		carModel.setId(carOptional.getId());
+		carModel.setId(car.getId());
 		carModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
 		return ResponseEntity.status(HttpStatus.OK).body(carService.save(carModel));
 	}

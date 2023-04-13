@@ -9,10 +9,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.sandes.speedyDrive.dtos.ClientDto;
 import com.sandes.speedyDrive.models.CarModel;
 import com.sandes.speedyDrive.models.ClientModel;
 import com.sandes.speedyDrive.repositores.CarRepository;
 import com.sandes.speedyDrive.repositores.ClientRepository;
+import com.sandes.speedyDrive.services.exceptions.EntityNotCreatedException;
+import com.sandes.speedyDrive.services.exceptions.EntityNotFoundException;
+
+import jakarta.validation.Valid;
 
 @Service
 public class ClientService {
@@ -30,8 +35,8 @@ public class ClientService {
 		return clientRepository.save(clientModel);
 	}
 
-	public Optional<ClientModel> findById(UUID id) {
-		return clientRepository.findById(id);
+	public ClientModel findById(UUID id) {
+		return clientRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Id not found: "+ id));
 	}
 
 	public Page<ClientModel> findAll(Pageable pageable) {
@@ -71,6 +76,14 @@ public class ClientService {
 
 	public Page<ClientModel> findAllAvaliable(Pageable pageable) {
 		return clientRepository.findBycarsIsNull(pageable);
+	}
+
+	public void save1(@Valid ClientDto clientDto) {
+		
+		if(clientRepository.existsByCpf(clientDto.getCpf())) {
+			throw new EntityNotCreatedException("cpf inválido!");
+		}
+		
 	}
 
 }

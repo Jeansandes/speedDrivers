@@ -1,16 +1,15 @@
 package com.sandes.speedyDrive.services;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import com.sandes.speedyDrive.models.CarModel;
 import com.sandes.speedyDrive.repositores.CarRepository;
+import com.sandes.speedyDrive.services.exceptions.EntityNotFoundException;
+import com.sandes.speedyDrive.services.exceptions.EntityNotUpdadeOrDeleteException;
 
 @Service
 public class CarService {
@@ -29,21 +28,20 @@ public class CarService {
 	public Page<CarModel> findAll(Pageable Pageable) {
 		return carRepository.findAll(Pageable);
 	}
+
+	public CarModel findById(UUID id) {
+		return carRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Id not found: "+id));
+	}
 	
-	/*public List<CarModel> findAllAvaliable(){
-		return carRepository.findByclientIsNull();
-	}*/
-
-	public Optional<CarModel> findById(UUID id) {
-		return carRepository.findById(id);
+	public void checkClient(CarModel car) {
+		if(car.getClient() != null) {
+			throw new EntityNotUpdadeOrDeleteException("you cannot delete or update a car that already has a customer");
+		}
 	}
 
-	public void delete(CarModel carOptional) {
-		carRepository.delete(carOptional);	
-	}
-
-	public void updateClientNull(UUID id) {
-		/*carRepository.updateClientNull(id);*/
+	public void delete(CarModel car) {
+		
+		carRepository.delete(car);	
 	}
 
 	public Page<CarModel> findAllAvaliable(Pageable pageable) {

@@ -4,18 +4,17 @@ import java.util.List;
 
 import com.sandes.speedyDrive.models.CarModel;
 
-import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public class ClientDto {
 
-	@NotBlank
+	@NotBlank()
 	private String name;
-	@NotBlank
+	@NotBlank()
 	@Size(max = 11,min = 11)
 	private String cpf;
-	@NotBlank
+	@NotBlank()
 	private String address;
 	private List<CarModel> cars;
 	
