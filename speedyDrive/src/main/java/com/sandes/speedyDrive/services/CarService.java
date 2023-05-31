@@ -1,24 +1,35 @@
 package com.sandes.speedyDrive.services;
 
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.UUID;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import com.sandes.speedyDrive.dtos.CarDto;
 import com.sandes.speedyDrive.models.CarModel;
+import com.sandes.speedyDrive.models.ClientModel;
 import com.sandes.speedyDrive.repositores.CarRepository;
 import com.sandes.speedyDrive.services.exceptions.EntityNotFoundException;
 import com.sandes.speedyDrive.services.exceptions.EntityNotUpdadeOrDeleteException;
+
+import jakarta.validation.Valid;
 
 @Service
 public class CarService {
 
 	final CarRepository carRepository;
+	
+	final ClientService clientService;
 
-	public CarService(CarRepository carRepository) {
+	public CarService(CarRepository carRepository, ClientService clientService) {
 		super();
 		this.carRepository = carRepository;
+		this.clientService = clientService;
 	}
 
 	public CarModel save(CarModel carModel) {
@@ -48,4 +59,17 @@ public class CarService {
 		return  carRepository.findByclientIsNull(pageable);
 	}
 
+	public void transferData(@Valid CarDto carDto, CarModel carModel) {
+		BeanUtils.copyProperties(carDto, carModel);
+		carModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
+		
+	}
+
+	public void insertClient(CarModel carModel) {
+		if(carModel.getClient() !=null) {
+			ClientModel client= clientService.findById(carModel.getClient().getId());
+			client.getCars().add(carModel);
+			clientService.save(client);
+		}	
+	}
 }

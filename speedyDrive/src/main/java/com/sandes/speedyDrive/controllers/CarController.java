@@ -1,11 +1,8 @@
 package com.sandes.speedyDrive.controllers;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 import java.util.UUID;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -23,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sandes.speedyDrive.dtos.CarDto;
 import com.sandes.speedyDrive.models.CarModel;
-import com.sandes.speedyDrive.models.ClientModel;
 import com.sandes.speedyDrive.services.CarService;
 import com.sandes.speedyDrive.services.ClientService;
 
@@ -43,19 +39,10 @@ public class CarController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<CarModel> saveCar(@RequestBody @Valid CarDto carsdto){
+	public ResponseEntity<CarModel> saveCar(@RequestBody @Valid CarDto cardto){
 		var carModel = new CarModel();	
-		BeanUtils.copyProperties(carsdto, carModel);
-		carModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
-		if(carModel.getClient() !=null) {
-			ClientModel client= clientService.findById(carModel.getClient().getId());
-			var clientModel = new ClientModel();
-			BeanUtils.copyProperties(client, clientModel);
-			clientModel.getCars().add(carModel);
-			clientService.save(clientModel);
-			
-		}
-		
+		carService.transferData(cardto, carModel);
+		carService.insertClient(carModel);	
 		return ResponseEntity.status(HttpStatus.CREATED).body(carService.save(carModel));
 	}
 	
@@ -84,13 +71,12 @@ public class CarController {
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<CarModel> updateCar(@RequestBody @Valid CarDto carsdto,@PathVariable(value= "id")UUID id){
+	public ResponseEntity<CarModel> updateCar(@RequestBody @Valid CarDto cardto,@PathVariable(value= "id")UUID id){
 		CarModel car = carService.findById(id);
 		carService.checkClient(car);
 		var carModel = new CarModel();
-		BeanUtils.copyProperties(carsdto, carModel);
+		carService.transferData(cardto, car);
 		carModel.setId(car.getId());
-		carModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
 		return ResponseEntity.status(HttpStatus.OK).body(carService.save(carModel));
 	}
 	
