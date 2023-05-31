@@ -35,7 +35,7 @@ public class CarService {
 	
 	public void checkClient(CarModel car) {
 		if(car.getClient() != null) {
-			throw new EntityNotUpdadeOrDeleteException("you cannot delete or update a car that already has a customer");
+			throw new EntityNotUpdadeOrDeleteException("you cannot create, delete or update a car that already has a customer");
 		}
 	}
 

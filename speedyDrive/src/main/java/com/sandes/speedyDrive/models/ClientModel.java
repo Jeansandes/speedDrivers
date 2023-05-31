@@ -8,12 +8,13 @@ import java.util.List;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 @Entity
@@ -32,8 +33,10 @@ public class ClientModel implements Serializable {
 	
 	private LocalDateTime registrationDate;
 	
-	@Column(nullable = false)
-	private String address;
+	@ManyToOne
+	@JoinColumn(name= "address_id")
+	private Address address;
+	
 	@JsonIgnore
 	@OneToMany(mappedBy = "client")
 	private List<CarModel> cars = new ArrayList<>();
@@ -43,7 +46,7 @@ public class ClientModel implements Serializable {
 	}
 
 	
-	public ClientModel(UUID id, String name, String cpf, String address) {
+	public ClientModel(UUID id, String name, String cpf, Address address) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -77,11 +80,11 @@ public class ClientModel implements Serializable {
 		this.cpf = cpf;
 	}
 
-	public String getAddress() {
+	public Address getAddress() {
 		return address;
 	}
 
-	public void setAddress(String address) {
+	public void setAddress(Address address) {
 		this.address = address;
 	}
 

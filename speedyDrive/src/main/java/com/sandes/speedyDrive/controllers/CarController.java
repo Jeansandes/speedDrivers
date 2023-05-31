@@ -2,8 +2,7 @@ package com.sandes.speedyDrive.controllers;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.List;
-import java.util.Optional;
+
 import java.util.UUID;
 
 import org.springframework.beans.BeanUtils;
@@ -44,7 +43,7 @@ public class CarController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<Object> saveCar(@RequestBody @Valid CarDto carsdto){
+	public ResponseEntity<CarModel> saveCar(@RequestBody @Valid CarDto carsdto){
 		var carModel = new CarModel();	
 		BeanUtils.copyProperties(carsdto, carModel);
 		carModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
@@ -77,7 +76,7 @@ public class CarController {
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Object> deleteCar(@PathVariable(value= "id")UUID id){
+	public ResponseEntity<String> deleteCar(@PathVariable(value= "id")UUID id){
 		CarModel car = carService.findById(id);
 		carService.checkClient(car);
 		carService.delete(car);
@@ -85,7 +84,7 @@ public class CarController {
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<Object> updateCar(@RequestBody @Valid CarDto carsdto,@PathVariable(value= "id")UUID id){
+	public ResponseEntity<CarModel> updateCar(@RequestBody @Valid CarDto carsdto,@PathVariable(value= "id")UUID id){
 		CarModel car = carService.findById(id);
 		carService.checkClient(car);
 		var carModel = new CarModel();

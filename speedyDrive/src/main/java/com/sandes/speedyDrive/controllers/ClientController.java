@@ -1,14 +1,7 @@
 package com.sandes.speedyDrive.controllers;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -24,13 +17,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sandes.speedyDrive.controllers.exception.StandardError;
 import com.sandes.speedyDrive.dtos.ClientDto;
-import com.sandes.speedyDrive.models.CarModel;
 import com.sandes.speedyDrive.models.ClientModel;
+import com.sandes.speedyDrive.services.AddressService;
 import com.sandes.speedyDrive.services.CarService;
 import com.sandes.speedyDrive.services.ClientService;
-import com.sandes.speedyDrive.services.exceptions.EntityNotFoundException;
 
 import jakarta.validation.Valid;
 
@@ -40,19 +31,21 @@ public class ClientController {
 
 	final ClientService  clientService;
 	final CarService carService;
-	public ClientController(ClientService clientService, CarService carService) {
+	final AddressService addressService;
+	public ClientController(ClientService clientService, CarService carService, AddressService addressService) {
 		super();
 		this.clientService = clientService;
 		this.carService = carService;
+		this.addressService = addressService;
 	}
 	
 
 	@PostMapping()
-	public ResponseEntity<ClientModel> saveClient(@RequestBody @Valid ClientDto clientsDto){
-			clientService.save1(clientsDto);
+	public ResponseEntity<ClientModel> saveClient(@RequestBody @Valid ClientDto clientDto){
+			clientService.checkData(clientDto);
 			var clientModel = new ClientModel();
-			BeanUtils.copyProperties(clientsDto, clientModel);
-			clientModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
+			clientService.transferData(clientDto,clientModel);
+			addressService.save(clientModel.getAddress());
 			return ResponseEntity.status(HttpStatus.CREATED).body(clientService.save(clientModel));
 		
 	}
@@ -77,7 +70,7 @@ public class ClientController {
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<String> deleteClient1(@PathVariable(value= "id") UUID id){
+	public ResponseEntity<String> deleteClient(@PathVariable(value= "id") UUID id){
 			ClientModel client = clientService.findById(id);
 			clientService.changeValues(client.getCars());
 			clientService.delete(client);
@@ -85,12 +78,12 @@ public class ClientController {
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<ClientModel> updateClient(@RequestBody @Valid ClientDto clientsDto, @PathVariable(value= "id") UUID id){
+	public ResponseEntity<ClientModel> updateClient(@RequestBody  ClientDto clientDto, @PathVariable(value= "id") UUID id){
 			ClientModel client = clientService.findById(id);
 			var clientModel = new ClientModel();
-			BeanUtils.copyProperties(clientsDto, clientModel);
+			clientService.transferData(clientDto, clientModel);
 			clientModel.setId(client.getId());
-			clientModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
+			clientModel.setCpf(client.getCpf());
 			return ResponseEntity.status(HttpStatus.OK).body(clientService.save(clientModel));
 	}
 }

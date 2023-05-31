@@ -2,6 +2,7 @@ package com.sandes.speedyDrive.dtos;
 
 import java.util.List;
 
+import com.sandes.speedyDrive.models.Address;
 import com.sandes.speedyDrive.models.CarModel;
 
 import jakarta.validation.constraints.NotBlank;
@@ -9,13 +10,12 @@ import jakarta.validation.constraints.Size;
 
 public class ClientDto {
 
-	@NotBlank()
+	@NotBlank(message = "nome não pode ser nulo")
 	private String name;
-	@NotBlank()
+	@NotBlank(message = "cpf não pode ser nulo")
 	@Size(max = 11,min = 11)
 	private String cpf;
-	@NotBlank()
-	private String address;
+	private Address address;
 	private List<CarModel> cars;
 	
 	public ClientDto() {}
@@ -36,11 +36,11 @@ public class ClientDto {
 		this.cpf = cpf;
 	}
 
-	public String getAddress() {
+	public Address getAddress() {
 		return address;
 	}
 
-	public void setAddress(String address) {
+	public void setAddress(Address address) {
 		this.address = address;
 	}
 
